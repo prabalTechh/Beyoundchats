@@ -46,20 +46,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const cors_1 = __importDefault(require("cors"));
-const index_1 = __importDefault(require("./routes/index"));
 const cheerio = __importStar(require("cheerio"));
-const app = (0, express_1.default)();
-app.use(express_1.default.json());
-app.use((0, cors_1.default)());
-//@ts-ignore
-app.post("/scrape", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const router = express_1.default.Router();
+// @ts-ignore
+router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const { url } = req.body;
     if (!url) {
         return res.status(400).json({ error: "URL is required" });
     }
     try {
-        // Validate URL
+        // Validate URL format
         new URL(url);
         const response = yield fetch(url, {
             headers: {
@@ -77,7 +74,6 @@ app.post("/scrape", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 error: "Failed to fetch the content from the URL"
             });
         }
-        // Ensure cheerio is properly loaded with error handling
         let $;
         try {
             $ = cheerio.load(html);
@@ -88,27 +84,34 @@ app.post("/scrape", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 error: "Failed to parse the HTML content"
             });
         }
-        // Safely extract data with error handling
-        let title;
+        // Extract data with error handling
+        let title = "";
+        let description = "";
+        let text = "";
         try {
             title = $("title").text().trim();
+            description = ((_a = $("meta[name='description']").attr('content')) === null || _a === void 0 ? void 0 : _a.trim()) || ""; // Meta description tag
+            text = $("body").text().trim(); // Scraping all the body text, adjust selector as needed
         }
         catch (extractError) {
             console.error("Data extraction error:", extractError);
-            title = "";
         }
         const scrapedData = {
-            title: title || "No title found"
+            title: title || "No title found",
+            description: description || "No description found",
+            text: text || "No content found"
         };
         res.json(scrapedData);
     }
     catch (error) {
         console.error("Error during scraping:", error);
+        // Handle URL validation errors
         if (error instanceof TypeError && error.message.includes('URL')) {
             return res.status(400).json({
                 error: "Invalid URL provided"
             });
         }
+        // Handle HTTP errors
         if (error instanceof Error) {
             if (error.message.includes('HTTP error!')) {
                 return res.status(502).json({
@@ -126,24 +129,4 @@ app.post("/scrape", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         });
     }
 }));
-app.use("/api/v1", index_1.default);
-// 404 handler
-app.use((_req, res) => {
-    res.status(404).json({
-        error: "Not Found",
-        status: 404
-    });
-});
-// Error handler
-app.use((error, _req, res) => {
-    console.error('Server error:', error);
-    res.status(500).json({
-        error: "Internal server error",
-        status: 500
-    });
-});
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-    console.log(`Running on Port ${PORT}`);
-});
-exports.default = app;
+exports.default = router;

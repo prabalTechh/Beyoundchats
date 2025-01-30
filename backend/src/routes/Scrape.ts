@@ -1,19 +1,16 @@
 import express, { Request, Response } from "express";
-import cors from "cors";
-import mainRouter from "./routes/index";
 import * as cheerio from 'cheerio';
 
-const app = express();
-
-app.use(express.json());
-app.use(cors());
+const router = express.Router();
 
 interface ScrapeResponse {
   title: string;
+  description: string;
+  text: string;
   // Add other fields as needed
 }
-//@ts-ignore
-app.post("/scrape", async (req: Request, res: Response) => {
+// @ts-ignore
+router.post("/", async (req: Request, res: Response) => {
   const { url }: { url?: string } = req.body;
 
   if (!url) {
@@ -21,7 +18,7 @@ app.post("/scrape", async (req: Request, res: Response) => {
   }
 
   try {
-    // Validate URL
+    // Validate URL format
     new URL(url);
 
     const response = await fetch(url, {
@@ -38,34 +35,40 @@ app.post("/scrape", async (req: Request, res: Response) => {
 
     const html = await response.text();
     
+
     if (!html) {
-      return res.status(500).json({ 
-        error: "Failed to fetch the content from the URL" 
+      return res.status(500).json({
+        error: "Failed to fetch the content from the URL"
       });
     }
 
-    // Ensure cheerio is properly loaded with error handling
     let $;
     try {
       $ = cheerio.load(html);
     } catch (cheerioError) {
       console.error("Cheerio loading error:", cheerioError);
-      return res.status(500).json({ 
-        error: "Failed to parse the HTML content" 
+      return res.status(500).json({
+        error: "Failed to parse the HTML content"
       });
     }
 
-    // Safely extract data with error handling
-    let title;
+    // Extract data with error handling
+    let title = "";
+    let description = "";
+    let text = "";
+    
     try {
       title = $("title").text().trim();
+      description = $("meta[name='description']").attr('content')?.trim() || ""; // Meta description tag
+      text = $("body").text().trim(); // Scraping all the body text, adjust selector as needed
     } catch (extractError) {
       console.error("Data extraction error:", extractError);
-      title = "";
     }
 
     const scrapedData: ScrapeResponse = {
-      title: title || "No title found"
+      title: title || "No title found",
+      description: description || "No description found",
+      text: text || "No content found"
     };
 
     res.json(scrapedData);
@@ -73,55 +76,32 @@ app.post("/scrape", async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error during scraping:", error);
 
+    // Handle URL validation errors
     if (error instanceof TypeError && error.message.includes('URL')) {
-      return res.status(400).json({ 
-        error: "Invalid URL provided" 
+      return res.status(400).json({
+        error: "Invalid URL provided"
       });
     }
 
+    // Handle HTTP errors
     if (error instanceof Error) {
       if (error.message.includes('HTTP error!')) {
-        return res.status(502).json({ 
+        return res.status(502).json({
           error: "Failed to fetch from the target URL",
-          details: error.message 
+          details: error.message
         });
       }
 
-      return res.status(500).json({ 
+      return res.status(500).json({
         error: "There was an error scraping the URL",
-        details: error.message 
+        details: error.message
       });
     }
 
-    res.status(500).json({ 
-      error: "An unexpected error occurred" 
+    res.status(500).json({
+      error: "An unexpected error occurred"
     });
   }
 });
 
-app.use("/api/v1", mainRouter);
-
-// 404 handler
-app.use((_req: Request, res: Response) => {
-  res.status(404).json({
-    error: "Not Found",
-    status: 404
-  });
-});
-
-// Error handler
-app.use((error: Error, _req: Request, res: Response) => {
-  console.error('Server error:', error);
-  res.status(500).json({
-    error: "Internal server error",
-    status: 500
-  });
-});
-
-const PORT = process.env.PORT || 4000;
-
-app.listen(PORT, () => {
-  console.log(`Running on Port ${PORT}`);
-});
-
-export default app;
+export default router;

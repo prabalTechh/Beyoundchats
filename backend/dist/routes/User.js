@@ -95,7 +95,7 @@ router.post("/verify-otp", (req, res) => __awaiter(void 0, void 0, void 0, funct
             return res.status(404).json({ message: "User not found" });
         }
         if (user.isVerified) {
-            return res.status(400).json({ message: "User is already verified" });
+            return res.status(400).json({ message: "User is already verified please SignIn" });
         }
         if (user.otp !== otp) {
             return res.status(400).json({ message: "Invalid OTP" });
