@@ -2,14 +2,14 @@ import { Check } from "lucide-react"
 
 
 interface dataProps {
-    title:String,
-    description:String,
-    Price:String,
-    savings: String
-    ,data:String,
-    data1:String,
-    data2:String,
-    data3:String,
+    title:string,
+    description:string,
+    Price:string,
+    savings: string
+    ,data:string,
+    data1:string,
+    data2:string,
+    data3:string,
 }
 
 export function PriceCart({title,description,Price,savings,data,data1,data2,data3}:dataProps){

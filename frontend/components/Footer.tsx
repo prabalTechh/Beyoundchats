@@ -1,6 +1,6 @@
 import React from "react";
 import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
-import { BorderSvg } from "@/icons/BorderSvg";
+// import { BorderSvg } from "@/icons/BorderSvg";
 
 export default function Footer() {
   return (

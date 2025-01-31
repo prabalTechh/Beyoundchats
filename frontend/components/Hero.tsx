@@ -21,7 +21,7 @@ export function Hero() {
             </span>
             <span>
               <p className="leading-snug text-base text-white md:pr-10 pb-2">
-                Don't let your brand lose customers. Qualify your leads to 3X your sales with our intelligent AI chatbot. It's like hiring a sales manager who knows your business in and out and works 24*7.
+                Don't let your brand lose customers. Qualify your leads to 3X your sales with our intelligent AI chatbot. Its like hiring a sales manager who knows your business in and out and works 24*7.
               </p>
             </span>
             
