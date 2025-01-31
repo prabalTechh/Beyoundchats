@@ -35,10 +35,10 @@ export function Plans() {
                         {/* Startup Plan */}
                         <PriceCart title="Startup" description="Best for individuals and startups who are just getting started" Price="899" savings="(You save ₹ 1,200 yearly)
 
-" data="50 chats in a month" data1="Basic dashboard (Chats management)" data2="Train chatbot on 20 Article" data3="Restricted dashboard" /> 
+" data="50 chats in a month" data1="Basic dashboard (Chats management)" data2="Train chatbot on 20 Article" data3="Restricted dashboard" />
                         <PriceCart title="Standard" description="Best for startups who are figuring out their go-to-market strategy" Price="4499" savings="(You save ₹6,000 yearly)
 
-" data="50 chats in a month" data1="Advanced Dashboard" data2="Train chatbot on 500 Article" data3="Emailers: Daily Stats + Monthly analysis"  />
+" data="50 chats in a month" data1="Advanced Dashboard" data2="Train chatbot on 500 Article" data3="Emailers: Daily Stats + Monthly analysis" />
                         <PriceCart title="Business" description="Best for businesses who want to convert large number of users into customers" Price="6999" savings="(You save ₹ 12,000 yearly)
 
 " data="50 chats in a month" data1="Advanced Dashboard" data2="Train chatbot on 1k Article" data3="AI Analysis" />

@@ -54,7 +54,7 @@ const Login: React.FC = () => {
         };
 
         sendSignupRequest();
-    }, [isSubmitting, formData]);
+    }, [isSubmitting, formData,router]);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
