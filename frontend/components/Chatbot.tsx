@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 
 
 type MessageOption = 'Login' | 'Sign Up';
@@ -14,12 +13,12 @@ interface Message {
   functions?: () => void;
 }
 
-type ChatStep = 'initial' | 'login' | 'sign up';
+// type ChatStep = 'initial' | 'login' | 'sign up';
 
 export function Chatbot() {
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [currentStep, setCurrentStep] = useState<ChatStep>('initial');
+  // const [currentStep, setCurrentStep] = useState<ChatStep>('initial');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
@@ -64,7 +63,7 @@ export function Chatbot() {
       type: 'user'
 
     }]);
-    setCurrentStep(option.toLowerCase() as ChatStep);
+    // setCurrentStep(option.toLowerCase() as ChatStep);
     router.push(option === 'Login' ? '/login' : '/signup');
   };
 
