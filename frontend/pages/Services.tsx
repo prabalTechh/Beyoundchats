@@ -63,7 +63,7 @@ export function Services() {
         </h1>
         
         {/* Grid container for lists */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-14 text-sm w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-14  text-sm w-full">
           <div className="w-full">
             <DataList 
               items={items}

@@ -22,4 +22,14 @@ model User {
   otp        String?
   otpExpiry  DateTime?
   createdAt  DateTime  @default(now())
+  urls       Urls[]
+}
+
+model Urls {
+  id          String @id @default(uuid())
+  title       String
+  description String
+  imgUrl      String[]
+  userId      String
+  user        User   @relation(fields: [userId], references: [id])
 }

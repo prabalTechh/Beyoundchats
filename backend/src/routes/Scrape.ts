@@ -1,107 +1,104 @@
 import express, { Request, Response } from "express";
-import * as cheerio from 'cheerio';
+import * as cheerio from "cheerio";
+import { middleware } from "../middleware";
+import Client from "../db/db";
 
 const router = express.Router();
 
 interface ScrapeResponse {
   title: string;
   description: string;
-  text: string;
-  // Add other fields as needed
+  images: string[];
 }
+
+// Route for web scraping
 // @ts-ignore
-router.post("/", async (req: Request, res: Response) => {
+router.post("/", middleware, async (req: Request, res: Response) => {
   const { url }: { url?: string } = req.body;
 
   if (!url) {
     return res.status(400).json({ error: "URL is required" });
   }
-
+  //@ts-ignore
+  const userId = req.userId
   try {
     // Validate URL format
     new URL(url);
 
     const response = await fetch(url, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; MetadataScraper/1.0)',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9',
-        'Accept-Language': 'en-US,en;q=0.5'
-      }
+        "User-Agent": "Mozilla/5.0 (compatible; MetadataScraper/1.0)",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9",
+        "Accept-Language": "en-US,en;q=0.5",
+      },
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      return res.status(502).json({
+        error: "Failed to fetch from the target URL",
+        status: response.status,
+      });
     }
 
     const html = await response.text();
-    
 
-    if (!html) {
+    if (!html.trim()) {
       return res.status(500).json({
-        error: "Failed to fetch the content from the URL"
+        error: "Failed to fetch valid content from the URL",
       });
     }
 
-    let $;
-    try {
-      $ = cheerio.load(html);
-    } catch (cheerioError) {
-      console.error("Cheerio loading error:", cheerioError);
-      return res.status(500).json({
-        error: "Failed to parse the HTML content"
-      });
-    }
+    // Load HTML into Cheerio
+    const $ = cheerio.load(html);
 
-    // Extract data with error handling
-    let title = "";
-    let description = "";
-    let text = "";
-    
-    try {
-      title = $("title").text().trim();
-      description = $("meta[name='description']").attr('content')?.trim() || ""; // Meta description tag
-      text = $("body").text().trim(); // Scraping all the body text, adjust selector as needed
-    } catch (extractError) {
-      console.error("Data extraction error:", extractError);
-    }
+    // Extract data safely
+    const title = $("title").text().trim() || "No title found";
+    const description = $('meta[name="description"]').attr("content")?.trim() || "No description found";
+    const images = $('img').map((i, el) => $(el).attr('src') || '').get()
+      .filter(src => src && (src.startsWith('http') || src.startsWith('/')))
+      .slice(0, 10);
 
-    const scrapedData: ScrapeResponse = {
-      title: title || "No title found",
-      description: description || "No description found",
-      text: text || "No content found"
-    };
+    // Return scraped data
+    const scrapedData: ScrapeResponse = { title, description, images };
 
-    res.json(scrapedData);
+    const addData = await Client.urls.create({
+      data: {
+        title: scrapedData.title,
+        description: scrapedData.description,
+        imgUrl: scrapedData.images,
+        user: { connect: { id: userId } },
+      }
+    })
+    res.json({
+     
+      addData
+    })
 
   } catch (error) {
     console.error("Error during scraping:", error);
 
-    // Handle URL validation errors
-    if (error instanceof TypeError && error.message.includes('URL')) {
-      return res.status(400).json({
-        error: "Invalid URL provided"
-      });
+    if (error instanceof TypeError && error.message.includes("URL")) {
+      return res.status(400).json({ error: "Invalid URL provided" });
     }
 
-    // Handle HTTP errors
-    if (error instanceof Error) {
-      if (error.message.includes('HTTP error!')) {
-        return res.status(502).json({
-          error: "Failed to fetch from the target URL",
-          details: error.message
-        });
-      }
-
-      return res.status(500).json({
-        error: "There was an error scraping the URL",
-        details: error.message
-      });
-    }
-
-    res.status(500).json({
-      error: "An unexpected error occurred"
+    return res.status(500).json({
+      error: "An error occurred while scraping the URL",
+      details: error instanceof Error ? error.message : "Unknown error",
     });
   }
 });
+
+
+router.get('/user-data', middleware, async(req,res)=>{
+//@ts-ignore
+ const userId = req.userId
+  const responseData = await Client.urls.findMany({
+      where:{
+        userId
+      }
+  })
+  res.json(responseData);
+})
+
 
 export default router;

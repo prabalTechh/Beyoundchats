@@ -17,6 +17,7 @@ const nodemailer_1 = __importDefault(require("nodemailer"));
 const db_1 = __importDefault(require("../db/db"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const middleware_1 = require("../middleware");
 const transporter = nodemailer_1.default.createTransport({
     host: "smtp.gmail.com",
     port: 587,
@@ -157,6 +158,21 @@ router.post("/signin", (req, res) => __awaiter(void 0, void 0, void 0, function*
             .json({
             error: "An error occurred during sign-in. Please try again later.",
         });
+    }
+}));
+router.get("/profile", middleware_1.middleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //@ts-ignore
+    const userId = req.userId;
+    try {
+        const users = yield db_1.default.user.findFirst({
+            where: {
+                id: userId
+            }
+        });
+        res.json({ data: users });
+    }
+    catch (error) {
+        res.status(500).json({ message: "Internal server error" });
     }
 }));
 exports.default = router;

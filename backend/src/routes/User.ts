@@ -3,6 +3,7 @@ import nodemailer from "nodemailer";
 import Client from "../db/db";
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
+import { middleware } from "../middleware";
 
 
 
@@ -177,6 +178,24 @@ router.post("/signin", async (req: Request, res: Response) => {
             });
     }
 });
+
+
+
+router.get("/profile", middleware ,async (req:Request, res:Response) => {
+    //@ts-ignore
+      const userId = req.userId;
+    
+      try {
+        const users = await Client.user.findFirst({
+          where:{
+            id: userId
+          }
+        });
+        res.json({ data: users });
+      } catch (error) {
+        res.status(500).json({ message: "Internal server error" });
+      }
+    });
 
 
 

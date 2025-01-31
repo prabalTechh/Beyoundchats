@@ -15,15 +15,15 @@ export default function Footer() {
             <li>Contact Us</li>
           </ul>
         </div>
-        <div>
-          <h3 className="text-gray-400 font-semibold mb-3">PRODUCTS</h3>
+        <div className="text-sm">
+          <h3 className="text-gray-400 font-semibold mb-3 text-base">PRODUCTS</h3>
           <ul className="space-y-2">
             <li>Features</li>
             <li>Integrations</li>
           </ul>
         </div>
         <div>
-          <h3 className="text-gray-400 font-semibold mb-3">PRICING</h3>
+          <h3 className="text-gray-400 font-semibold mb-3 text-base">PRICING</h3>
           <ul className="space-y-2">
             <li>Startup</li>
             <li>Standard</li>
@@ -32,7 +32,7 @@ export default function Footer() {
           </ul>
         </div>
         <div>
-          <h3 className="text-gray-400 font-semibold mb-3">RESOURCES</h3>
+          <h3 className="text-gray-400 font-semibold mb-3 text-base">RESOURCES</h3>
           <ul className="space-y-2">
             <li>Blogs</li>
             <li>Case studies</li>
@@ -56,7 +56,7 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="border-t border-gray-600 pt-6 text-center text-gray-400 text-sm">
+      <div className="border-t border-gray-600 pt-6 text-center text-gray-400 text-xs">
         <p>BeyondChats 2024. All rights reserved.</p>
         <div className="flex justify-center space-x-4 mt-3">
           <a href="#">Data Security & Privacy Policy</a>
