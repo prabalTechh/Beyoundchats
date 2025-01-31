@@ -22,7 +22,7 @@ export default function Page() {
   const [url, setUrl] = useState("");
   const [user, setUser] = useState<{ data: { name: string } } | null>(null);
   const [urlResponses, setUrlResponses] = useState<{ title: string, description: string, imgUrl: string }[]>([]);
-  const [userRes, setUserRes] = useState<{ title: string, description: string, imgUrl: string | "" }[]>([]);
+  const [userRes, setUserRes] = useState<{ title: string, description: string, imgUrl: string | "/thumbnail.webp" }[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
