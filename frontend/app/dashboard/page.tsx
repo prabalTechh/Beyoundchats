@@ -8,7 +8,7 @@ import axios from "axios";
 import Card from "@/components/Card";
 
 type MessageOption = "Train Bot" | "Get Started";
-const BASE_URL = "http://localhost:4000";
+const BASE_URL = "https://beyoundchats.onrender.com";
 
 interface Message {
   text: string;
@@ -21,7 +21,6 @@ export default function Page() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [url, setUrl] = useState("");
   const [user, setUser] = useState<{ data: { name: string } } | null>(null);
-  const [urlResponses, setUrlResponses] = useState<{ title: string, description: string, imgUrl: string }[]>([]);
   const [userRes, setUserRes] = useState<{ title: string, description: string, imgUrl: string | "/thumbnail.webp" }[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -54,23 +53,22 @@ export default function Page() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    async function userData() {
+    async function fetchUserResponses() {
       try {
         const response = await axios.get(`${BASE_URL}/scrape/user-data`, {
           headers: {
             Authorization: token,
           },
         });
-        
+
         setUserRes(response.data);
       } catch (error) {
         console.log(error);
       }
     }
 
-    userData();
+    fetchUserResponses();
   }, []);
-
 
   useEffect(() => {
     if (!isOpen) return;
@@ -107,19 +105,15 @@ export default function Page() {
         },
       });
 
-
-
       const newCard = { title: response.data.addData.title, description: response.data.addData.description, imgUrl: response.data.addData.imgUrl };
 
-      setUrlResponses((prev) => [...prev, newCard]);
+      setUserRes((prev) => [...prev, newCard]);
       setMessages((prev) => [...prev, { text: `Bot training in progress... ✅`, type: "bot" }]);
     } catch (error) {
       console.error("Error training bot:", error);
       setMessages((prev) => [...prev, { text: "Failed to train the bot. ❌", type: "bot" }]);
     }
   };
-
-
 
   return (
     <div className="h-screen bg-PrimaryBackground text-white">
@@ -140,17 +134,15 @@ export default function Page() {
 
         {/* Card Section */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-
           {userRes.map((response, index) => (
             <Card key={index} title={response.title} description={response.description} imgUrl={response.imgUrl} />
           ))}
         </div>
       </div>
 
-
       {isOpen && (
         <div
-          className="fixed inset-0  backdrop-blur-sm z-[9998]"
+          className="fixed inset-0 backdrop-blur-sm z-[9998]"
           onClick={() => setIsOpen(false)}
         />
       )}
@@ -199,8 +191,8 @@ export default function Page() {
                 placeholder="Enter URL to train the bot..."
                 value={url}
                 onChange={(e) => {
-                  e.preventDefault()
-                  setUrl(e.target.value)
+                  e.preventDefault();
+                  setUrl(e.target.value);
                 }}
                 className="w-full p-2 border rounded text-gray-800"
               />

@@ -12,7 +12,7 @@ interface FormDataProp {
     password: string;
 }
 
-const BASE_URL = "http://localhost:4000/api/v1/user";
+const BASE_URL = "https://beyoundchats.onrender.com/api/v1/user";
 
 const SignUp: React.FC = () => {
     const [formData, setFormData] = useState<FormDataProp>({

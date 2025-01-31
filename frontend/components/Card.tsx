@@ -30,7 +30,7 @@ function Card({ title, description, imgUrl }: CardProps) {
           <img
             src={imageError ? 'https://placehold.co/600x400cd ' : getPrimaryImage()}
             alt="Website Preview"
-            className="w-full h-48 object-cover"
+            className="w-full p-2 h-48 object-cover"
             onError={handleImageError}
           />
           <div className="absolute top-4 right-4 bg-white/90 p-2 rounded-full shadow-md backdrop-blur-sm">
