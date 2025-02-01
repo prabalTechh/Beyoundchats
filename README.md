@@ -1,12 +1,12 @@
 ## Deployed Link
 https://beyoundchats.vercel.app/
-# BeyondChat 🚀
+# BeyondChat 
 
 **BeyondChat** is a dynamic chatbot platform where users can train a chatbot using URLs. It combines seamless authentication, an intuitive UI/UX, and robust backend architecture to deliver an amazing experience.
 
 ---
 
-## 🌟 Features
+##  Features
 
 ### Core Functionalities
 - **Train Chatbot**: Provide a URL to train the chatbot, which stores the extracted data in a memory-powered database.
@@ -31,7 +31,7 @@ https://beyoundchats.vercel.app/
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 ### Backend
 - **Node.js** with Express.js
 - **TypeScript**
@@ -47,7 +47,7 @@ https://beyoundchats.vercel.app/
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 - **Node.js** and **npm/yarn**
