@@ -55,6 +55,22 @@ https://beyoundchats.vercel.app/
 - PostgreSQL database setup
 - Render and Vercel accounts for deployment
 
+- 
+### Future Enhancements
+Add multi-language support for the chatbot.
+Expand training capabilities with more data sources.
+Introduce AI-based recommendations for better responses.
+
+
+
+###  Acknowledgments
+Special thanks to:
+
+Prisma for simplifying database operations.
+Next.js and Vercel for powering the frontend.
+Render for hosting the backend effortlessly.
+
+
 ### Installation
 
 #### 1. Clone the Repository
@@ -102,10 +118,6 @@ npm run dev
 Access the application at http://localhost:3000.
 
 
-## Future Enhancements
-Add multi-language support for the chatbot.
-Expand training capabilities with more data sources.
-Introduce AI-based recommendations for better responses.
 
 
 
